@@ -50,8 +50,8 @@ serialised. The annotations are well documented in Javadoc.
 To be able to read these actions from encoded data, you use 
 [ConvertUtils](https://github.com/lshift/bletchley/blob/master/src/main/java/net/lshift/spki/convert/ConvertUtils.java)
 which needs a [ReadInfo](https://github.com/lshift/bletchley/blob/master/src/main/java/net/lshift/spki/convert/ReadInfo.java)
-[here](src/main/java/net/lshift/bletchley/mail/Actions.java), just by listing
-the action classes.
+defined [here](src/main/java/net/lshift/bletchley/mail/Actions.java), just by 
+listing the action classes.
 
 The thing Bletchley helps you most with is filtering out data you don't trust,
 so code for receiving messages is really simple. The receivers are:
@@ -70,3 +70,5 @@ secrecy criteria:
 
 * [Sender](src/main/java/net/lshift/bletchley/mail/Sender.java)
 
+This is documented in the code. I'd recommend you check out the project and look
+it in your favourite IDE, so you have easy access to the javadoc of Bletchley.

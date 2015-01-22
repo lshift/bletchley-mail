@@ -27,8 +27,8 @@ import com.google.common.collect.Multimap;
  * Put the message in the addressed envelope.
  * There are two actors involved in the delivery: the senders server and
  * the recipients server. The address consists of a list of recipient servers,
- * ({@line Relay}) which is used by the senders server and a list
- * of destination addresses ({@line Delivery}) which are used by the
+ * ({@link Relay}) which is used by the senders server and a list
+ * of destination addresses ({@link Delivery}) which are used by the
  * recipient servers to delivery the message to the recipients inbox.
  * @see #addressedEnvelope(Message)
  */

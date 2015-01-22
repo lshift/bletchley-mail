@@ -37,14 +37,20 @@ Walk through
 We start by defining Actions. Actions are what you want to send and receive. In
 our case, our sender wants to send:
 
-* The [message](src/main/java/net/lshift/bletchley/mail/Message.java) itself to the recipient (and end user)
-* [Relay](src/main/java/net/lshift/bletchley/mail/Relay.java) commands to the senders mail server, instructing it to relay the message
-   to the recipients server
-* [Deliver](src/main/java/net/lshift/bletchley/mail/Relay.java) commands to the recipients mail server, instructing it to deliver the
-   message to the recipient.
+* The [message](src/main/java/net/lshift/bletchley/mail/Message.java) itself 
+  to the recipient (and end user)
+* [Relay](src/main/java/net/lshift/bletchley/mail/Relay.java) which tells the 
+  senders mail server to relay the message to the recipients server
+* [Deliver](src/main/java/net/lshift/bletchley/mail/Deliver.java) which tells 
+  the recipients mail server, to deliver the message to the recipient.
 
 These are all Java classes, annotated to tell Bletchley how they should be
 serialised. The annotations are well documented in Javadoc.
+
+To be able to read these actions from encoded data, you use 
+[ConvertUtils](../bletchley/src/main/java/net/lshift/bletchley/convert/ConvertUtils.java)
+which needs a [ReadInfo](../bletchley/src/main/java/net/lshift/bletchley/convert/ReadInfo.java)
+[defined here](src/main/java/net/lshift/bletchley/mail/Actions.java) in READ_INFO.
 
 The thing Bletchley helps you most with is filtering out data you don't trust,
 so code for receiving messages is really simple. The receivers are:

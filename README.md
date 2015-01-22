@@ -48,8 +48,8 @@ These are all Java classes, annotated to tell Bletchley how they should be
 serialised. The annotations are well documented in Javadoc.
 
 To be able to read these actions from encoded data, you use 
-[ConvertUtils](https://github.com/lshift/bletchley/src/main/java/net/lshift/bletchley/convert/ConvertUtils.java)
-which needs a [ReadInfo](https://github.com/lshift/bletchley/src/main/java/net/lshift/bletchley/convert/ReadInfo.java)
+[ConvertUtils](https://github.com/lshift/bletchley/blob/master/src/main/java/net/lshift/spki/convert/ConvertUtils.java)
+which needs a [ReadInfo](https://github.com/lshift/bletchley/blob/master/src/main/java/net/lshift/spki/convert/ReadInfo.java)
 [defined here](src/main/java/net/lshift/bletchley/mail/Actions.java) in READ_INFO.
 
 The thing Bletchley helps you most with is filtering out data you don't trust,

@@ -9,7 +9,7 @@ import org.junit.Test;
 public class SenderTest extends TestServices {
     @Test
     public void testWrap() {
-        sender.wrap(sampleMessage());
+        sender.addressedEnvelope(sampleMessage());
     }
 
     @Test
@@ -17,6 +17,6 @@ public class SenderTest extends TestServices {
         ConvertUtils.fromBytes(
                 Actions.READ_INFO, 
                 SequenceItem.class, 
-                ConvertUtils.toBytes(sender.wrap(sampleMessage())));
+                ConvertUtils.toBytes(sender.addressedEnvelope(sampleMessage())));
     }
 }

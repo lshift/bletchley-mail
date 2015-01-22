@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableList;
 public class ServerTest extends TestServices {
     @Test
     public void testServerActions() throws InvalidInputException {
-        SequenceItem message = sender.wrap(sampleMessage());
+        SequenceItem message = sender.addressedEnvelope(sampleMessage());
         assertEquals(
                 senderServer.actions(Relay.class, message), 
                 ImmutableList.of(new Relay(TEST_RECEIVER_SERVER)));

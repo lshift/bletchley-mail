@@ -24,7 +24,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 
 /**
- * Generate messages on behalf of the sender.
+ * Put the message in the addressed envelope.
+ * There are two actors involved in the delivery: the senders server and
+ * the recipients server. The address consists of a list of recipient servers,
+ * ({@line Relay}) which is used by the senders server and a list
+ * of destination addresses ({@line Delivery}) which are used by the
+ * recipient servers to delivery the message to the recipients inbox.
+ * @see #addressedEnvelope(Message)
  */
 public class Sender {
     private final PrivateSigningKey signingKey;
@@ -51,6 +57,11 @@ public class Sender {
          they will probably also have multiple encryption keys.
      */
 
+    /**
+     * Constructor.
+     * @see #addressedEnvelope(Message) for descriptions of how the parameters
+     * are used.
+     */
     public Sender(PrivateSigningKey signingKey,
             Map<Address, PublicEncryptionKey> recipients,
             Map<ServerName, RemoteServer> servers,
@@ -62,7 +73,19 @@ public class Sender {
         this.relay = relay;
     }
 
-    public Sequence wrap(Message message) {
+    /**
+     * Put the message in an addressed envelope.
+     * This method encrypts {@link Relay} actions using the public encryption
+     * key of the senders server, and {@link Delivery} actions are grouped by
+     * recipient server, each group being encrypted using the corresponding
+     * recipient server public encryption key, from {@link #servers}. 
+     * The {@link Message} part is signed with {@link #signingKey}. It is then 
+     * encrypted for each recipient (defined in {@link Message#to} and 
+     * {@link Message#cc}) using the corresponding keys from {@link #recipients}
+     * @param message
+     * @return a sequence for the addressed envelope.
+     */
+    public Sequence addressedEnvelope(Message message) {
         // Organise addresses by destination server
         Multimap<ServerName,Address> destinations = HashMultimap.create();
         for(Address recipient: Iterables.concat(message.to, message.cc)) {
@@ -70,17 +93,17 @@ public class Sender {
         }
 
         return sequence(
-                wrapRelays(destinations),
-                wrapDeliveries(destinations),
-                wrapMessage(message));
+                encryptedRelays(destinations),
+                encryptedDeliveries(destinations),
+                signedEncryptedMessage(message));
     }
 
-    private SequenceItem wrapMessage(Message message) {
+    private SequenceItem signedEncryptedMessage(Message message) {
         /* 
              This code encrypts the message in a way that allows multiple
              recipients to decrypt it. It starts by creating a symmetric 
              key that I will use to encrypt the message. This could be encrypted
-             this using each recipients private key, but Bletchley provides a 
+             using each recipients private key, but Bletchley provides a 
              convenient mechanism for securely establishing a shared key which 
              only works between a pair of sender and recipient. This 
              mechanism is used to share a single key with each recipient in turn.
@@ -112,7 +135,7 @@ public class Sender {
         return new Sequence(sequence);
     }
 
-    private Sequence wrapRelays(Multimap<ServerName, Address> destinations) {
+    private Sequence encryptedRelays(Multimap<ServerName, Address> destinations) {
         List<SequenceItem> relays = Lists.newArrayList();
         for(ServerName server: destinations.keySet()) {
             relays.add(new Action(new Relay(server)));
@@ -126,15 +149,15 @@ public class Sender {
                     new Sequence(relays)));
     }
 
-    private Sequence wrapDeliveries(Multimap<ServerName, Address> destinations) {
+    private Sequence encryptedDeliveries(Multimap<ServerName, Address> destinations) {
         List<SequenceItem> deliveries = Lists.newArrayList();
         for(Map.Entry<ServerName, Collection<Address>> dest: destinations.asMap().entrySet()) {
-            deliveries.add(wrapDeliveries(dest.getKey(), dest.getValue()));
+            deliveries.add(encryptedDeliveries(dest.getKey(), dest.getValue()));
         }
         return new Sequence(deliveries);
     }
 
-    private Sequence wrapDeliveries(ServerName server, Collection<Address> addresses) {
+    private Sequence encryptedDeliveries(ServerName server, Collection<Address> addresses) {
         final EncryptionCache ephemeral = EncryptionCache.ephemeralKey();
         List<SequenceItem> deliveries = Lists.newArrayList();
         for(Address address: addresses) {

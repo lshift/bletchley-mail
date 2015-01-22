@@ -25,6 +25,6 @@ public class ReceiverTest extends TestServices {
         Message sampleMessage = sampleMessage();
         assertEquals(
                 sampleMessage,
-                receiver.unwrap(sender.wrap(sampleMessage)));
+                receiver.unwrap(sender.addressedEnvelope(sampleMessage)));
     }
 }

@@ -59,6 +59,15 @@ so code for receiving messages is really simple. The receivers are:
 * [Server](src/main/java/net/lshift/bletchley/mail/Server.java)
 * [Receiver](src/main/java/net/lshift/bletchley/mail/Receiver.java)
 
+The receivers use the [inference engine](https://github.com/lshift/bletchley/blob/master/src/main/java/net/lshift/spki/suiteb/InferenceEngine.java)
+to extract the actions which they are able to decrypt, and which they trust.
+For the sake of simplicity in the example, servers don't need to establish
+trust in the sender to process actions from the message, so they use
+processUntrusted, which you would rarely do. Clients use processUntrusted
+to work out who the message claims to be from, and then verifies that by
+processing the message again, but this time, the engine is configured only
+to trust the claimed sender.
+
 It makes sense to define receivers first: You will have quite a lot of
 flexibility in constructing a message, but your receivers will tend to be
 very stable. It's worth writing tests which construct the simplest possible

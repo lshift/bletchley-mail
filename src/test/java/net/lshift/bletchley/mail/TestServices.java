@@ -28,6 +28,7 @@ public class TestServices {
     private static final Address TEST_SENDER = new Address(TEST_SENDER_SERVER, "sender");
     protected static final Address TEST_RECEIVER = new Address(TEST_RECEIVER_SERVER, "receiver");
 
+
     protected static Message sampleMessage() {
         return new Message(
                 UUID.randomUUID(), 
@@ -58,12 +59,12 @@ public class TestServices {
         senderRemoteServer = new RemoteServer(
                 TEST_SENDER_SERVER, 
                 senderServerEncryptionKey.getPublicKey(), null);
-        senderServer = new Server(senderServerEncryptionKey);
+        senderServer = new Server(senderServerEncryptionKey, new TestLog());
         receiverServerEncryptionKey = PrivateEncryptionKey.generate();
         receiverRemoteServer = new RemoteServer(
                 TEST_RECEIVER_SERVER,
                 receiverServerEncryptionKey.getPublicKey(), null);
-        receiverServer = new Server(receiverServerEncryptionKey);
+        receiverServer = new Server(receiverServerEncryptionKey, new TestLog());
         @SuppressWarnings("unchecked")
         Map<ServerName,RemoteServer> servers = Mockito.mock(Map.class);
         Mockito.when(servers.get(TEST_RECEIVER_SERVER)).thenReturn(receiverRemoteServer);
